@@ -1,0 +1,2 @@
+- [OpenOCD General Command Line](https://openocd.org/doc/html/General-Commands.html)
+- [Cortex -M4 Devices Generic User Guide Generic User Guide](https://developer.arm.com/documentation/dui0553/latest/)
