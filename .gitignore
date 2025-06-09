@@ -2,3 +2,5 @@
 *.s
 *.out
 *.elf
+*.map
+*.vscode
