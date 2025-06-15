@@ -16,8 +16,8 @@
  ******************************************************************************
  */
 
-#include "led.h"
-#include "hsi.h"
+#include "example/inc/led.h"
+#include "example/inc/hsi.h"
 
 // semi hosting init function
 extern void initialise_monitor_handles(void);

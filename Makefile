@@ -1,36 +1,50 @@
 CC = arm-none-eabi-gcc
+SIZE = arm-none-eabi-size
+
+# example code
+EXAMPLE := example
+INC_DIR := $(EXAMPLE)/inc
+SRC_DIR := $(EXAMPLE)/src
+OBJ_DIR := build
+
+BIN := main
+
+SRCS := main.c \
+		$(wildcard src/*c) \
+ 		$(wildcard $(EXAMPLE)/src/*.c)
+
+OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS)))
+
+
 
 MACH = cortex-m4
-CFLAGS = -c -mcpu=$(MACH) -mthumb -std=gnu11 -Wall
+CFLAGS = -c -mcpu=$(MACH) -mthumb -std=gnu11 -Wall -Iinc -I$(EXAMPLE)/inc
 LDFLAGS = -mcpu=$(MACH) -mthumb --specs=nano.specs -T stm32f303ze_linker.ld -lc -lnosys -Wl,-Map=final.map
 
-all: main.o startup.o syscall.o led.o hsi.o final.elf
+BIN := final.elf
 
-semi: main.o startup.o syscall.o led.o final_sh.elf
+all: $(OBJ_DIR) $(BIN)
 
-main.o: main.c
-	$(CC) $(CFLAGS) -o $@ $^
+# Link object files
+$(BIN): $(OBJS)
+	$(CC) $(OBJS) $(LDFLAGS) -o $@
+	$(SIZE) $@
 
-led.o: led.c
-	$(CC) $(CFLAGS) -o $@ $^
+# Compile .c to .o
+$(OBJ_DIR)/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-hsi.o: hsi.c
-	$(CC) $(CFLAGS) -o $@ $^
+$(OBJ_DIR)/%.o: src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-startup.o: startup.c
-	$(CC) $(CFLAGS) -o $@ $^
+$(OBJ_DIR)/%.o: $(EXAMPLE)/src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-syscall.o: syscall.c
-	$(CC) $(CFLAGS) -o $@ $^
-
-final.elf: main.o startup.o syscall.o led.o hsi.o
-	$(CC) $(LDFLAGS) -o $@ $^
-
-final_sh.elf: main.o startup.o
-	$(CC) $(LDFLAGS_SH) -o $@ $^
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 clean:
-	rm -rf *.o *.elf *.out *.map
+	rm -rf $(OBJ_DIR) *.elf *.map
 
 upload:
 	openocd -f interface/stlink.cfg -f target/stm32f3x.cfg -c " program final.elf verify reset exit "
