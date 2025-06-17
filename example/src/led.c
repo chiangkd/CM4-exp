@@ -1,3 +1,5 @@
+#include "stm32f303ze.h"
+#include "gpio.h"
 #include "led.h"
 
 // Turn ON the LED
@@ -7,45 +9,53 @@
 // - LD1 -> PB0:  base: 0x48000400 + GPIOx_MODER: 0x0  (Set [1:0] to 0x01: General purpose output)
 // - LD2 -> PB7:  base: 0x48000400 + GPIOx_MODER: 0x0  (Set [15:14] to 0x01: General purpose output)
 // - LD3 -> PB14: base: 0x48000400 + GPIOx_MODER: 0x0  (Set [29:28] to 0x01: General purpose output)
-// - LD7 -> PE11: base: 0x48001000 + GPIOx_MODER: 0x0  (Set [23:22] to 0x01: General purpose output)
-// - LD8 -> PE14:
+
 // 3. Address of the GPIO output data register (used to write)
 // - LD1 -> PB0:  base: 0x48000400 + GPIOx_ODR: 0x14  (Set [0] to 0x01: Port output data)
 // - LD2 -> PB7:  base: 0x48000400 + GPIOx_ODR: 0x14  (Set [7] to 0x01: Port output data)
 // - LD3 -> PB14: base: 0x48000400 + GPIOx_ODR: 0x14  (Set [14] to 0x01: Port output data)
-// - LD7 -> PE11: base: 0x48001000 + GPIOx_ODR: 0x14  (Set [11] to 0x01: Port output data)
-// - LD8 -> PE14:
 
+// User button: PC13
+void delay(void)
+{
+	for (uint32_t i = .0; i < 500000; i++);
+}
 
 void turnOnLED()
 {
+	GPIO_HANDLE_T gpio_led;
+	gpio_led.ptr_gpio = (GPIO_REG_T *) GPIOB_BASEADDR;
+	gpio_led.gpio_pin_config.num = GPIO_PIN_0;
+	gpio_led.gpio_pin_config.mode = GPIO_MODE_OUT;
+	gpio_led.gpio_pin_config.spd = GPIO_OUT_SPD_HIGH;
+	gpio_led.gpio_pin_config.optype = GPIO_OUT_TYPE_PP;	// Configure push-pull for LD1
+	gpio_led.gpio_pin_config.pupdctl = GPIO_PUPD_NPUPD;
 
-	uint32_t *pClkCtrlReg = (uint32_t *)0x40021014;	// RCC_AHBENR
-	uint32_t *pPBModeReg = (uint32_t *)0x48000400;
-	uint32_t *pPBOutReg = (uint32_t *)0x48000414;
+	GPIO_peri_clk_ctrl(gpio_led.ptr_gpio, 1);
+	GPIO_init(&gpio_led);
 
-	uint32_t *pPEModeReg = (uint32_t *)0x48001000;
-	uint32_t *pPEOutReg = (uint32_t *)0x48001014;
+	gpio_led.gpio_pin_config.num = GPIO_PIN_7;
+	gpio_led.gpio_pin_config.optype = GPIO_OUT_TYPE_OD;	// Configure open-drain for LD2
+	gpio_led.gpio_pin_config.pupdctl = GPIO_PUPD_PU;
+	GPIO_init(&gpio_led);
 
-	// 1. Enable the clock for GPIOB peripheral in the AHBENR
-	uint32_t temp = *pClkCtrlReg;	// Read operation
-	temp = temp | (0x1 << 18) | (0x1 << 21);		// Modify
-	*pClkCtrlReg = temp;	// Write back
+	GPIO_HANDLE_T gpio_btn;
+	gpio_btn.ptr_gpio = (GPIO_REG_T *) GPIOC_BASEADDR;
+	gpio_btn.gpio_pin_config.num = GPIO_PIN_13;
+	gpio_btn.gpio_pin_config.mode = GPIO_MODE_IN;
+	gpio_btn.gpio_pin_config.spd = GPIO_OUT_SPD_HIGH;
+	gpio_btn.gpio_pin_config.pupdctl = GPIO_PUPD_NPUPD;
+	GPIO_peri_clk_ctrl(gpio_btn.ptr_gpio, 1);
+	GPIO_init(&gpio_btn);
 
-	// 2. Configure the mode of IO pin as output
-	uint32_t temp2 = *pPBModeReg;
-	temp2 = temp2 | (0x1 << 0) | (0x1 << 14) | (0x1 << 28);
-	*pPBModeReg = temp2;
 
-	// -----
-	*pPEModeReg |= (0x1 << 22) | (0x1 << 28);
-
-	// 3. Set output data register to make I/O pin as HIGH
-	uint32_t temp3 = *pPBOutReg;
-	temp3 = temp3 | (0x1 << 0) | (0x1 << 7) | (0x1 << 14);
-	*pPBOutReg = temp3;
-
-	// -----
-	*pPEOutReg |= (0x1 << 11) | (0x1 << 14);
+	while (1)
+	{
+		if (GPIO_read_pin(gpio_btn.ptr_gpio, GPIO_PIN_13)) {
+			delay();	// De-bouncing
+			GPIO_toggle_pin(gpio_led.ptr_gpio, GPIO_PIN_0);
+			GPIO_toggle_pin(gpio_led.ptr_gpio, GPIO_PIN_7);
+		}
+	}
 
 }
