@@ -11,8 +11,29 @@ void GPIO_init(GPIO_HANDLE_T *ptr_gpio_handle)
         ptr_gpio_handle->ptr_gpio->moder &= ~(0x3 << (2 * ptr_gpio_handle->gpio_pin_config.num));
         ptr_gpio_handle->ptr_gpio->moder |= tmp;
     } else { // Interrupt mode
-
+        if (ptr_gpio_handle->gpio_pin_config.mode == GPIO_MODE_INT_FALL_TRIG) {
+            // Falling Trigger
+            EXTI->ftsr1 |= (1 << ptr_gpio_handle->gpio_pin_config.num);     // Configure the FTSR
+            EXTI->rtsr1 &= ~(1 << ptr_gpio_handle->gpio_pin_config.num);    // Clear the RTSR
+        } else if (ptr_gpio_handle->gpio_pin_config.mode == GPIO_MODE_INT_RISE_TRIG) {
+            // Rising Trigger
+            EXTI->rtsr1 |= (1 << ptr_gpio_handle->gpio_pin_config.num);     // Configure the RTSR
+            EXTI->ftsr1 &= ~(1 << ptr_gpio_handle->gpio_pin_config.num);    // Clear the FTSR
+        } else if (ptr_gpio_handle->gpio_pin_config.mode == GPIO_MODE_INT_FALL_RISE_TRIG) {
+            // Falling and Rising Trigger
+            EXTI->rtsr1 |= (1 << ptr_gpio_handle->gpio_pin_config.num);     // Configure the RTSR
+            EXTI->ftsr1 |= (1 << ptr_gpio_handle->gpio_pin_config.num);     // Configure the FTSR
+        }
+        // Configure GPIO port selection in SYSCFG_EXTICR
+        uint8_t tmp1 = ptr_gpio_handle->gpio_pin_config.num / 4;
+        uint8_t tmp2 = ptr_gpio_handle->gpio_pin_config.num % 4;
+        uint8_t port_code = GPIO_BASEADDR_TO_CODE(ptr_gpio_handle->ptr_gpio);
+        SYSCFG_PCLK_EN();
+        SYSCFG->exticr[tmp1] = port_code << (tmp2 * 4);
+        // Enable the EXTI interrupt delivery using IMR
+        EXTI->imr1 |= (1 << ptr_gpio_handle->gpio_pin_config.num);
     }
+
     tmp = 0;
     // Configure the speed
     tmp = (ptr_gpio_handle->gpio_pin_config.spd << (2 * ptr_gpio_handle->gpio_pin_config.num));
@@ -106,11 +127,49 @@ void GPIO_toggle_pin(GPIO_REG_T *ptr_gpio_reg, uint8_t pin)
     ptr_gpio_reg->odr ^= (1 << pin);
 }
 
-void GPIO_irq_config(uint8_t irq_number, uint8_t irq_prior, uint8_t enable)
+void GPIO_irq_config(uint8_t irq_number, uint8_t enable)
 {
-
+    if (enable) {
+        if (irq_number <= 31) {
+            // ISER0
+            *NVIC_ISER0 |= (1 << irq_number);
+        } else if (irq_number > 31 && irq_number < 64) {
+            // ISER1
+            *NVIC_ISER1 |= (1 << (irq_number % 32));
+        } else if (irq_number >= 64 && irq_number < 96) {
+            // ISER2
+            *NVIC_ISER2 |= (1 << (irq_number % 64));
+        }
+    } else {
+        if (irq_number <= 31) {
+            // ICER0
+            *NVIC_ICER0 |= (1 << irq_number);
+        } else if (irq_number > 31 && irq_number < 64) {
+            // ICER1
+            *NVIC_ICER1 |= (1 << (irq_number % 32));
+        } else if (irq_number >= 64&& irq_number < 96) {
+            // ICER2
+            *NVIC_ICER2 |= (1 << (irq_number % 64));
+        }
+    }
 }
+
+void GPIO_irq_priority_config(uint8_t irq_number, uint8_t irq_prior)
+{
+    uint8_t iprx_index = irq_number / 4;
+    uint8_t iprx_section = irq_number % 4;
+
+    // For Coretex-M4, 16 programmable priority levels, but 4 bits of 
+    // interrupt priority are used.
+    uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PRIOR_BITS_IMPLEMETED);
+    *(NVIC_IPR_BASE_ADDR + iprx_index) |= (irq_prior << (shift_amount));
+}
+
 void GPIO_irq_handle(uint8_t pin)
 {
-
+    // Clear the EXTI PR register corresponding to the pin number
+    if (EXTI->pr1 & (1 << pin)) {
+        // clear (Pending register is cleared by writing a '1')
+        EXTI->pr1 |= (1 << pin);
+    }
 }

@@ -3,6 +3,31 @@
 #include <stdint.h>
 
 /**
+ * Arm Cortex Mx Processor Specific Register
+ */
+
+// NVIC
+#define NVIC_ISER0          (volatile uint32_t *) 0xE000E100
+#define NVIC_ISER1          (volatile uint32_t *) 0xE000E104
+#define NVIC_ISER2          (volatile uint32_t *) 0xE000E108
+#define NVIC_ISER3          (volatile uint32_t *) 0xE000E10C
+#define NVIC_ISER4          (volatile uint32_t *) 0xE000E110
+#define NVIC_ISER5          (volatile uint32_t *) 0xE000E104
+#define NVIC_ISER6          (volatile uint32_t *) 0xE000E108
+#define NVIC_ISER7          (volatile uint32_t *) 0xE000E11C
+
+#define NVIC_ICER0          (volatile uint32_t *) 0xE000E180
+#define NVIC_ICER1          (volatile uint32_t *) 0xE000E184
+#define NVIC_ICER2          (volatile uint32_t *) 0xE000E188
+#define NVIC_ICER3          (volatile uint32_t *) 0xE000E18C
+#define NVIC_ICER4          (volatile uint32_t *) 0xE000E190
+#define NVIC_ICER5          (volatile uint32_t *) 0xE000E194
+#define NVIC_ICER6          (volatile uint32_t *) 0xE000E198
+#define NVIC_ICER7          (volatile uint32_t *) 0xE000E19C
+
+#define NVIC_IPR_BASE_ADDR    (volatile uint32_t *) 0xE000E400  // Interrupt priority register
+#define NO_PRIOR_BITS_IMPLEMETED    4
+/**
  * AHBx and APBx Bus Peripheral base address
  */
 #define PERIPHERAL_BASE     0x40000000U
@@ -34,6 +59,15 @@
 #define GPIOF_BASEADDR      (AHB2BUS_BASEADDR + 0x1400)
 #define GPIOG_BASEADDR      (AHB2BUS_BASEADDR + 0x1800)
 #define GPIOH_BASEADDR      (AHB2BUS_BASEADDR + 0x1C00)
+
+#define GPIO_BASEADDR_TO_CODE(addr) ((addr == (GPIO_REG_T *) GPIOA_BASEADDR ? 0 : \
+                                      addr == (GPIO_REG_T *) GPIOB_BASEADDR ? 1 : \
+                                      addr == (GPIO_REG_T *) GPIOC_BASEADDR ? 2 : \
+                                      addr == (GPIO_REG_T *) GPIOD_BASEADDR ? 3 : \
+                                      addr == (GPIO_REG_T *) GPIOE_BASEADDR ? 4 : \
+                                      addr == (GPIO_REG_T *) GPIOF_BASEADDR ? 5 : \
+                                      addr == (GPIO_REG_T *) GPIOG_BASEADDR ? 6 : \
+                                      addr == (GPIO_REG_T *) GPIOH_BASEADDR ? 7 : 0))
 
 // AHB3
 #define ADC_1_2_BASEADDR    (AHB3BUS_BASEADDR + 0x0000)     
@@ -83,6 +117,15 @@
 #define TIM17_BASEADDR              (APB2BUS_BASEADDR + 0x4800)
 #define TIM20_BASEADDR              (APB2BUS_BASEADDR + 0x5000)
 
+// IRQ Numbers
+#define IRQ_NO_EXTI0        6
+#define IRQ_NO_EXTI1        7
+#define IRQ_NO_EXTI2_TS     8
+#define IRQ_NO_EXTI3        9
+#define IRQ_NO_EXTI4        10
+#define IRQ_NO_EXTI9_5      23
+#define IRQ_NO_EXTI15_10    40
+
 /** 
  * Peripherals register
  */
@@ -101,25 +144,53 @@ typedef struct {
     volatile uint32_t brr;          /** GPIO port bit reset register */
 } GPIO_REG_T;
 
-
 // RCC registers
 typedef struct {
-    uint32_t cr;        /** Clock control register */
-    uint32_t cfgr;      /** Clock configuration register */
-    uint32_t cir;       /** Clock interrupt register */
-    uint32_t apb2rstr;  /** APB2 peripheral reset register */
-    uint32_t apb1rstr;  /** APB1 peripheral reset register */
-    uint32_t ahbenr;    /** AHB peripheral clock enable register */
-    uint32_t apb2enr;   /** APB2 peripheral clock enable register */
-    uint32_t apb1enr;   /** APB1 peripheral clock enable register */
-    uint32_t bdcr;      /** RTC domain control register */
-    uint32_t csr;       /** Control/status register */
-    uint32_t ahbrstr;   /** AHB peripheral reset register */
-    uint32_t cfg2r;     /** Clock configuration register 2 */
-    uint32_t cfgrs;     /** Clock configuration register 3 */
+    volatile uint32_t cr;        /** Clock control register */
+    volatile uint32_t cfgr;      /** Clock configuration register */
+    volatile uint32_t cir;       /** Clock interrupt register */
+    volatile uint32_t apb2rstr;  /** APB2 peripheral reset register */
+    volatile uint32_t apb1rstr;  /** APB1 peripheral reset register */
+    volatile uint32_t ahbenr;    /** AHB peripheral clock enable register */
+    volatile uint32_t apb2enr;   /** APB2 peripheral clock enable register */
+    volatile uint32_t apb1enr;   /** APB1 peripheral clock enable register */
+    volatile uint32_t bdcr;      /** RTC domain control register */
+    volatile uint32_t csr;       /** Control/status register */
+    volatile uint32_t ahbrstr;   /** AHB peripheral reset register */
+    volatile uint32_t cfg2r;     /** Clock configuration register 2 */
+    volatile uint32_t cfgrs;     /** Clock configuration register 3 */
 } RCC_REG_T;
 
+// EXTI registers
+typedef struct {
+    volatile uint32_t imr1;     /** Interrupt mask register */
+    volatile uint32_t emr1;     /** Event mask register */
+    volatile uint32_t rtsr1;    /** Rising trigger selection register */
+    volatile uint32_t ftsr1;    /** Falling trigger selection register */
+    volatile uint32_t swier1;   /** Software interrupt event register */
+    volatile uint32_t pr1;      /** Pending register */
+    volatile uint32_t imr2;     /** Interrupt mask register */
+    volatile uint32_t emr2;     /** Event mask register */
+    volatile uint32_t rtsr2;    /** Rising trigger selection register */
+    volatile uint32_t ftsr2;    /** Falling trigger selection register */
+    volatile uint32_t swier2;   /** Software interrupt event register */
+    volatile uint32_t pr2;      /** Pending register */
+} EXTI_REG_T;
+
+// SYSCFG registers
+typedef struct {
+    volatile uint32_t cfgr1;        /** SYSCFG configuration register 1 */
+    volatile uint32_t rcr;          /** SYSCFG CCM SRAM protection register */
+    volatile uint32_t exticr[4];    /** SYSCFG external interrupt configuration register 1, 2, 3, 4 */
+    volatile uint32_t cfgr2;        /** SYSCFG configuration register 2 */
+    uint32_t reserved[12];          /** Reserved (cfgr3, only available in STM32F303x6/x8 and STM32F328 devices) */
+    volatile uint32_t cfgr4;        /** SYSCFG configuration register 4 */
+} SYSCFG_REG_T;
+
+
 #define RCC ((RCC_REG_T *)RCC_BASEADDR)
+#define EXTI  ((EXTI_REG_T *) EXTI_BASEADDR)
+#define SYSCFG ((SYSCFG_REG_T *) SYSCFG_COMP_OPAMP_BASEADDR)
 
 #define RCC_AHBENR_CTL          \
     _(ahbenr, DMA1, 0)          \

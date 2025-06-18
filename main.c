@@ -18,6 +18,7 @@
 
 #include "example/inc/led.h"
 #include "example/inc/hsi.h"
+#include "gpio.h"
 
 // semi hosting init function
 extern void initialise_monitor_handles(void);
@@ -29,4 +30,10 @@ int main(void)
 	meaHSI();
     /* Loop forever */
 	for(;;);
+}
+
+void EXTI0_IRQHandler(void)
+{
+	// Handle the interrupt
+	GPIO_irq_handle(0);
 }

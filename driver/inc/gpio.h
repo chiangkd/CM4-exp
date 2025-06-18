@@ -92,7 +92,8 @@ void GPIO_write_port(GPIO_REG_T *ptr_gpio_reg, uint16_t val);
 void GPIO_toggle_pin(GPIO_REG_T *ptr_gpio_reg, uint8_t pin);
 
 // IRQ
-void GPIO_irq_config(uint8_t irq_number, uint8_t irq_prior, uint8_t enable);
+void GPIO_irq_config(uint8_t irq_number, uint8_t enable);
+void GPIO_irq_priority_config(uint8_t irq_number, uint8_t irq_prior);
 void GPIO_irq_handle(uint8_t pin);
 
 #endif
