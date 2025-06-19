@@ -18,6 +18,7 @@
 
 #include "example/inc/led.h"
 #include "example/inc/hsi.h"
+#include "example/inc/btn_interrupt.h"
 #include "gpio.h"
 
 // semi hosting init function
@@ -25,9 +26,9 @@ extern void initialise_monitor_handles(void);
 
 int main(void)
 {
-
-	turnOnLED();
-	meaHSI();
+	btn_interrupt();
+	// turnOnLED();
+	// meaHSI();
     /* Loop forever */
 	for(;;);
 }

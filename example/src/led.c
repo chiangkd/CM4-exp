@@ -16,7 +16,7 @@
 // - LD3 -> PB14: base: 0x48000400 + GPIOx_ODR: 0x14  (Set [14] to 0x01: Port output data)
 
 // User button: PC13
-void delay(void)
+static void delay(void)
 {
 	for (uint32_t i = .0; i < 500000; i++);
 }
@@ -24,18 +24,21 @@ void delay(void)
 void turnOnLED()
 {
 	GPIO_HANDLE_T gpio_led;
+
+	// Configure push-pull for LD1
 	gpio_led.ptr_gpio = (GPIO_REG_T *) GPIOB_BASEADDR;
 	gpio_led.gpio_pin_config.num = GPIO_PIN_0;
 	gpio_led.gpio_pin_config.mode = GPIO_MODE_OUT;
 	gpio_led.gpio_pin_config.spd = GPIO_OUT_SPD_HIGH;
-	gpio_led.gpio_pin_config.optype = GPIO_OUT_TYPE_PP;	// Configure push-pull for LD1
+	gpio_led.gpio_pin_config.optype = GPIO_OUT_TYPE_PP;
 	gpio_led.gpio_pin_config.pupdctl = GPIO_PUPD_NPUPD;
 
 	GPIO_peri_clk_ctrl(gpio_led.ptr_gpio, 1);
 	GPIO_init(&gpio_led);
 
+	// Configure open-drain for LD2
 	gpio_led.gpio_pin_config.num = GPIO_PIN_7;
-	gpio_led.gpio_pin_config.optype = GPIO_OUT_TYPE_OD;	// Configure open-drain for LD2
+	gpio_led.gpio_pin_config.optype = GPIO_OUT_TYPE_OD;
 	gpio_led.gpio_pin_config.pupdctl = GPIO_PUPD_PU;
 	GPIO_init(&gpio_led);
 

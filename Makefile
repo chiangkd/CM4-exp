@@ -22,7 +22,7 @@ OBJS := $(patsubst %.c, $(OBJ_DIR)/%.o, $(notdir $(SRCS)))
 
 
 MACH = cortex-m4
-CFLAGS = -c -mcpu=$(MACH) -mthumb -std=gnu11 -Wall -Iinc -I$(DRV_INC_DIR) -I$(EXAMPLE_INC_DIR)
+CFLAGS = -c -g -mcpu=$(MACH) -mthumb -std=gnu11 -Wall -Iinc -I$(DRV_INC_DIR) -I$(EXAMPLE_INC_DIR)
 LDFLAGS = -mcpu=$(MACH) -mthumb --specs=nano.specs -T stm32f303ze_linker.ld -lc -lnosys -Wl,-Map=final.map
 
 BIN := final.elf
