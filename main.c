@@ -39,10 +39,7 @@ int main(void)
 	char usr_data[] = "Hello world";
 	SPI3_gpio_init();
 	SPI3_init();
-	// Make NSS signal internally high, otherwise, trigger mode faule (MODF)
-	SPI_ssi_config((SPI_I2S_REG_T *)SPI3_I2S3_BASEADDR, 1);
-	// Before sending the data, Enable the SPI3 peripheral
-	SPI_peri_ctrl((SPI_I2S_REG_T *)SPI3_I2S3_BASEADDR, 1);
+
 	// Send data
 	SPI_send((SPI_I2S_REG_T *)SPI3_I2S3_BASEADDR, (uint8_t *)usr_data, strlen(usr_data));
 
