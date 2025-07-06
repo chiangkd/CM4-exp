@@ -75,7 +75,7 @@ typedef struct {
  * APIs
  */
 
-// Init/De-init
+// Init / De-init
 void GPIO_init(GPIO_HANDLE_T *ptr_gpio_handle);
 void GPIO_deinit(GPIO_REG_T *ptr_gpio_reg);
 

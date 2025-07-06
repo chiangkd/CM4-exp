@@ -1,10 +1,12 @@
 #include "gpio.h"
 
-
-
 void GPIO_init(GPIO_HANDLE_T *ptr_gpio_handle)
 {
     uint32_t tmp = 0;
+
+    // Enable the peripheral clock
+    GPIO_peri_clk_ctrl(ptr_gpio_handle->ptr_gpio, 1);
+
     // Configure the mode
     if (ptr_gpio_handle->gpio_pin_config.mode <= GPIO_MODE_ANA) {
         tmp = (ptr_gpio_handle->gpio_pin_config.mode << (2 * ptr_gpio_handle->gpio_pin_config.num));

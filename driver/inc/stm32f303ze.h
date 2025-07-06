@@ -161,6 +161,18 @@ typedef struct {
     volatile uint32_t cfgrs;     /** Clock configuration register 3 */
 } RCC_REG_T;
 
+typedef struct {
+    volatile uint32_t cr1;      /** Control register 1 */
+    volatile uint32_t cr2;      /** Control register 2 */
+    volatile uint32_t sr;       /** Status register */
+    volatile uint32_t dr;       /** Data register */
+    volatile uint32_t crcpr;    /** CRC polynomial register */
+    volatile uint32_t rxcrcr;   /** Rx CRC register */
+    volatile uint32_t txcrcr;   /** Tx CRC register */
+    volatile uint32_t cfgr;     /** Configuration register */
+    volatile uint32_t pr;       /** Prescaler register */
+} SPI_I2S_REG_T;
+
 // EXTI registers
 typedef struct {
     volatile uint32_t imr1;     /** Interrupt mask register */
@@ -245,6 +257,7 @@ typedef struct {
     _(apb2enr, TIM17, 18)       \
     _(apb2enr, TIM20, 20)
 
+/** Define PCLOCK enable / disable macro */
 #define _(reg, name, bit)                                                   \
     static inline void name##_PCLK_EN(void) { RCC->reg |= (1 << bit); }     \
     static inline void name##_PCLK_DIS(void) { RCC->reg &= ~(1 << bit); }
