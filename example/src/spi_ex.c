@@ -4,7 +4,7 @@
 void SPI3_gpio_init(void)
 {
 	/** 
-	 * SPI example
+	 * SPI example: Use Logic Analyze to monitor signal
 	 */
 	// PC10: SPI3_SCK
 	// PC11: SPI3_MISO

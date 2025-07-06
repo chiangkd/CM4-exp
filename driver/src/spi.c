@@ -47,7 +47,7 @@ void SPI_init(SPI_HANDLE_T *ptr_spi_handle)
 	SPI_ssi_config((SPI_I2S_REG_T *)SPI3_I2S3_BASEADDR, 1);
 	// Before sending the data, Enable the SPI3 peripheral
 	SPI_peri_ctrl((SPI_I2S_REG_T *)SPI3_I2S3_BASEADDR, 1);
-    
+
     // Configure the Data Size
     ptr_spi_handle->ptr_spi->cr2 = ptr_spi_handle->spi_pin_config.ds << CR2_DS;
 }
@@ -115,10 +115,41 @@ void SPI_send(SPI_I2S_REG_T *ptr_spi_reg, uint8_t *pTxBuffer, uint32_t len)
         }
     }
 }
-// void SPI_recv(SPI_I2S_REG_T *ptr_spi_reg, uint8_t *pRxBuffer, uint32_t len)
-// {
+void SPI_recv(SPI_I2S_REG_T *ptr_spi_reg, uint8_t *pRxBuffer, uint32_t len)
+{
+    // Blocking
 
-// }
+    uint32_t ds = (ptr_spi_reg->cr2 >> 8) & 0x0F;   // Get DS[3:0]
+    if (ds < 3) ds = 7; // From RM, If DS[3:0] = "Not used", they are forced to the value "0111"
+    uint32_t data_size = ds + 1;
+
+    while (len > 0) {
+        // Wait until Rx FIFO not empty
+        while (!SPI_GetStatusFlag(ptr_spi_reg, (1 << SR_RXNE)));
+        
+        // Check Data Size
+        if (data_size <= 8) {
+            // Read 1 Byte from dr
+            *pRxBuffer = (uint8_t) ptr_spi_reg->dr;
+            pRxBuffer++;
+            len--;
+        } else if (data_size <= 16) {
+            // Send 2 bytes (lower byte send first)
+            uint16_t data = ptr_spi_reg->dr;
+            *pRxBuffer = (uint8_t) (data & 0xFF);
+            pRxBuffer++;
+            len--;
+
+            if (len > 0) {
+                *pRxBuffer = (uint8_t) ((data >> 8) & 0xFF);
+                pRxBuffer++;
+                len--;
+            }
+
+            ptr_spi_reg->dr = data;
+        }
+    }
+}
 
 void SPI_peri_ctrl(SPI_I2S_REG_T *ptr_spi_reg, uint8_t enable)
 {
