@@ -117,14 +117,71 @@
 #define TIM17_BASEADDR              (APB2BUS_BASEADDR + 0x4800)
 #define TIM20_BASEADDR              (APB2BUS_BASEADDR + 0x5000)
 
-// IRQ Numbers
-#define IRQ_NO_EXTI0        6
-#define IRQ_NO_EXTI1        7
-#define IRQ_NO_EXTI2_TS     8
-#define IRQ_NO_EXTI3        9
-#define IRQ_NO_EXTI4        10
-#define IRQ_NO_EXTI9_5      23
-#define IRQ_NO_EXTI15_10    40
+// IRQ vector list for STM32F303ZE (Peripheral IRQ only)
+#define IRQ_VECTOR          \
+    _(WWDG,                0)   \
+    _(PVD,                 1)   \
+    _(TAMPER_STAMP,        2)   \
+    _(RTC_WKUP,            3)   \
+    _(FLASH,               4)   \
+    _(RCC,                 5)   \
+    _(EXTI0,               6)   \
+    _(EXTI1,               7)   \
+    _(EXTI2_TSC,           8)   \
+    _(EXTI3,               9)   \
+    _(EXTI4,               10)  \
+    _(DMA1_Stream0,        11)  \
+    _(DMA1_Stream1,        12)  \
+    _(DMA1_Stream2,        13)  \
+    _(DMA1_Stream3,        14)  \
+    _(DMA1_Stream4,        15)  \
+    _(DMA1_Stream5,        16)  \
+    _(DMA1_Stream6,        17)  \
+    _(ADC,                 18)  \
+    _(FDCAN1_IT0,          19)  \
+    _(FDCAN1_IT1,          20)  \
+    _(EXTI9_5,             23)  \
+    _(TIM1_BRK_TIM15,      24)  \
+    _(TIM1_UP_TIM16,       25)  \
+    _(TIM1_TRG_COM,        26)  \
+    _(TIM1_CC,             27)  \
+    _(TIM2,                28)  \
+    _(TIM3,                29)  \
+    _(TIM4,                30)  \
+    _(I2C1_EV,             31)  \
+    _(I2C1_ER,             32)  \
+    _(I2C2_EV,             33)  \
+    _(I2C2_ER,             34)  \
+    _(SPI1,                35)  \
+    _(SPI2,                36)  \
+    _(USART1,              37)  \
+    _(USART2,              38)  \
+    _(USART3,              39)  \
+    _(EXTI15_10,           40)  \
+    _(RTC_Alarm,           41)  \
+    _(OTG_FS,              42)  \
+    _(DMA2_Stream0,        47)  \
+    _(DMA2_Stream1,        48)  \
+    _(DMA2_Stream2,        49)  \
+    _(DMA2_Stream3,        50)  \
+    _(DMA2_Stream4,        51)  \
+    _(USART4_5,            52)  \
+    _(I2C3_EV,             53)  \
+    _(I2C3_ER,             54)  \
+    _(SPI3,                55)  \
+    _(USART6,              56)  \
+    _(SPI4,                57)  \
+    _(OCTOSPI1,            58)  \
+    _(OCTOSPI2,            59)  \
+    _(RNG,                 60)  \
+    _(FPU,                 61)
+
+
+typedef enum {
+#define _(name, num) IRQ_NO_##name = (num),
+    IRQ_VECTOR
+#undef _
+} IRQ_NO_T;
 
 /** 
  * Peripherals register
