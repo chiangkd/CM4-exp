@@ -34,15 +34,24 @@ int main(void)
     /* Loop forever */
 
 	// /** 
-	//  * SPI example
+	//  * SPI example ()
 	//  */
 	char usr_data[] = "Hello world";
 	SPI3_gpio_init();
 	SPI3_init();
 
 	// Send data
-	SPI_send((SPI_I2S_REG_T *)SPI3_I2S3_BASEADDR, (uint8_t *)usr_data, strlen(usr_data));
+	SPI_HANDLE_T spi_handle;
+	spi_handle.ptr_spi = (SPI_I2S_REG_T *)SPI3_I2S3_BASEADDR;
 
+	
+	SPI_send_intr(&spi_handle, (uint8_t *)usr_data, strlen(usr_data));
+	// SPI_send((SPI_I2S_REG_T *)SPI3_I2S3_BASEADDR, (uint8_t *)usr_data, strlen(usr_data));
+
+	// Test interrupt-triggered
+	while (1) {
+		SPI_irq_handling(&spi_handle);
+	}
 	for(;;);
 }
 

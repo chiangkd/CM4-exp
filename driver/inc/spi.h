@@ -19,7 +19,29 @@ typedef struct {
 typedef struct {
     SPI_I2S_REG_T *ptr_spi;
     SPI_CONFIG_T spi_pin_config;
+    /** For non-blockint API */
+    uint8_t *pTxBuffer; // Tx buffer address
+    uint8_t *pRxBuffer; // Rx buffer address
+    uint32_t TxLen;     // Tx length
+    uint32_t RxLen;     // Rx length
+    uint8_t TxState;    // Tx State
+    uint8_t RxState;    // Rx State
 } SPI_HANDLE_T;
+
+/**
+ * SPI Application states
+ */
+#define SPI_RDY         0
+#define SPI_BUSY_RX  1
+#define SPI_BUSY_TX  2
+
+/**
+ * SPI Application events
+ */
+#define SPI_EVENT_TX_CMPLT  1
+#define SPI_EVENT_RX_CMPLT  2
+#define SPI_EVENT_OVR_ERR   3
+#define SPI_EVENT_CRC_ERR   4
 
 /**
  * SPI Device mode
@@ -142,12 +164,26 @@ void SPI_peri_clk_ctrl(SPI_I2S_REG_T *ptr_spi_reg, uint8_t enable);
 void SPI_send(SPI_I2S_REG_T *ptr_spi_reg, uint8_t *pTxBuffer, uint32_t len);
 void SPI_recv(SPI_I2S_REG_T *ptr_spi_reg, uint8_t *pRxBuffer, uint32_t len);
 
+// Interrupt-triggered Send and Receive
+uint8_t SPI_send_intr(SPI_HANDLE_T *ptr_spi_handle, uint8_t *pTxBuffer, uint32_t len);
+uint8_t SPI_recv_intr(SPI_HANDLE_T *ptr_spi_handle, uint8_t *pRxBuffer, uint32_t len);
+
 // IRQ
 void SPI_irq_config(uint8_t irq_number, uint8_t enable);
 void SPI_irq_priority_config(uint8_t irq_number, uint8_t irq_prior);
-void SPI(SPI_HANDLE_T *pHandle);
+void SPI_irq_handling(SPI_HANDLE_T *ptr_spi_handle);
+
+void SPI_clear_ovr(SPI_I2S_REG_T *ptr_spi_reg);
+void SPI_close_transmission(SPI_HANDLE_T *ptr_spi_handle);
+void SPI_close_reception(SPI_HANDLE_T *ptr_spi_handle);
 
 // Other peripheral control
 void SPI_peri_ctrl(SPI_I2S_REG_T *ptr_spi_reg, uint8_t enable);
 void SPI_ssi_config(SPI_I2S_REG_T *ptr_spi_reg, uint8_t enable);
+
+/**
+ * Application callback (implemented by application)
+ */
+void spi_app_event_callback(SPI_HANDLE_T *ptr_spi_handle, uint8_t event);
+
 #endif

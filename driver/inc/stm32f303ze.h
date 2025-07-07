@@ -1,6 +1,9 @@
 #ifndef _STM32F303ZE_H_
 #define _STM32F303ZE_H_
 #include <stdint.h>
+#include <stddef.h>
+
+#define __WEAK __attribute__((weak))
 
 /**
  * Arm Cortex Mx Processor Specific Register
