@@ -233,6 +233,20 @@ typedef struct {
     volatile uint32_t pr;       /** Prescaler register */
 } SPI_I2S_REG_T;
 
+typedef struct {
+    volatile uint32_t cr1;      /** Control register 1 */
+    volatile uint32_t cr2;      /** Control register 2 */
+    volatile uint32_t oar1;     /** Own address 1 register */
+    volatile uint32_t oar2;     /** Own address 2 register */
+    volatile uint32_t timingr;  /** Timing register */
+    volatile uint32_t timeoutr; /** Timeout register */
+    volatile uint32_t isr;      /** Interrupt and status register */
+    volatile uint32_t icr;      /** Interrupt clear register */
+    volatile uint32_t pecr;     /** PEC register */
+    volatile uint32_t rxdr;     /** Receive data register */
+    volatile uint32_t txdr;     /** Transmit data register */
+} I2C_REG_t;
+
 // EXTI registers
 typedef struct {
     volatile uint32_t imr1;     /** Interrupt mask register */

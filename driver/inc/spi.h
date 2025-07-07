@@ -157,7 +157,7 @@ typedef enum {
 void SPI_init(SPI_HANDLE_T *ptr_spi_handle);
 void SPI_deinit(SPI_I2S_REG_T *ptr_spi_reg);
 
-// Clock settint
+// Clock setting
 void SPI_peri_clk_ctrl(SPI_I2S_REG_T *ptr_spi_reg, uint8_t enable);
 
 // Data Send and Receive

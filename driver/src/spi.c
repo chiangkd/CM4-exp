@@ -248,10 +248,16 @@ uint8_t SPI_recv_intr(SPI_HANDLE_T *ptr_spi_handle, uint8_t *pRxBuffer, uint32_t
     return state;
 }
 
-// void SPI_irq_priority_config(uint8_t irq_number, uint8_t irq_prior)
-// {
+void SPI_irq_priority_config(uint8_t irq_number, uint8_t irq_prior)
+{
+    uint8_t iprx_index = irq_number / 4;
+    uint8_t iprx_section = irq_number % 4;
 
-// }
+    // For Coretex-M4, 16 programmable priority levels, but 4 bits of 
+    // interrupt priority are used.
+    uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PRIOR_BITS_IMPLEMETED);
+    *(NVIC_IPR_BASE_ADDR + iprx_index) |= (irq_prior << (shift_amount));
+}
 
 static void spi_txe_intr_handle(SPI_HANDLE_T *ptr_spi_handle)
 {
