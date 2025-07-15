@@ -245,7 +245,21 @@ typedef struct {
     volatile uint32_t pecr;     /** PEC register */
     volatile uint32_t rxdr;     /** Receive data register */
     volatile uint32_t txdr;     /** Transmit data register */
-} I2C_REG_t;
+} I2C_REG_T;
+
+typedef struct {
+    volatile uint32_t cr1;      /** Control register 1 */
+    volatile uint32_t cr2;      /** Control register 2 */
+    volatile uint32_t cr3;      /** COntrol register 3 */
+    volatile uint32_t brr;      /** Baud rate register */
+    volatile uint32_t gtpr;     /** Guard time and prescaler register */
+    volatile uint32_t rtor;     /** Receiver timeout register */
+    volatile uint32_t rqr;      /** Request register */
+    volatile uint32_t isr;      /** Interrupt and status register */
+    volatile uint32_t icr;      /** Interrupt flag clear register */
+    volatile uint32_t rdr;      /** Receive data register */
+    volatile uint32_t tdr;      /** Transmit data register */
+} USART_REG_T;
 
 // EXTI registers
 typedef struct {

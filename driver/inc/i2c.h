@@ -14,7 +14,7 @@ typedef struct {
 } I2C_CONFIG_T;
 
 typedef struct {
-    I2C_REG_t *ptr_i2c;
+    I2C_REG_T *ptr_i2c;
     I2C_CONFIG_T i2c_pin_config;
 } I2C_HANDLE_T;
 
@@ -97,10 +97,10 @@ typedef struct {
 
 // Init / De-init
 void I2C_init(I2C_HANDLE_T *ptr_i2c_handle);
-void I2C_deinit(I2C_REG_t *ptr_i2c_reg);
+void I2C_deinit(I2C_REG_T *ptr_i2c_reg);
 
 // Clock setting
-void I2C_peri_clk_ctrl(I2C_REG_t *ptr_i2c_reg, uint8_t enable);
+void I2C_peri_clk_ctrl(I2C_REG_T *ptr_i2c_reg, uint8_t enable);
 
 // Data Send and Receive
 
@@ -109,7 +109,7 @@ void I2C_irq_config(uint8_t irq_number, uint8_t enable);
 void I2C_irq_priority_config(uint8_t irq_number, uint8_t irq_prior);
 
 // Other peripheral control
-void I2C_peri_ctrl(I2C_REG_t *ptr_i2c_reg, uint8_t enable);
+void I2C_peri_ctrl(I2C_REG_T *ptr_i2c_reg, uint8_t enable);
 
 /**
  * Application callback (implemented by application)

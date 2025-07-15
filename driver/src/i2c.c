@@ -5,28 +5,28 @@ void I2C_init(I2C_HANDLE_T *ptr_i2c_handle)
 {
     ;
 }
-void I2C_deinit(I2C_REG_t *ptr_i2c_reg)
+void I2C_deinit(I2C_REG_T *ptr_i2c_reg)
 {
-    if (ptr_i2c_reg == (I2C_REG_t *) I2C1_BASEADDR) I2C1_REG_RST();
-    else if (ptr_i2c_reg == (I2C_REG_t *) I2C2_BASEADDR) I2C3_REG_RST();
-    else if (ptr_i2c_reg == (I2C_REG_t *) I2C3_BASEADDR) I2C3_REG_RST();
+    if (ptr_i2c_reg == (I2C_REG_T *) I2C1_BASEADDR) I2C1_REG_RST();
+    else if (ptr_i2c_reg == (I2C_REG_T *) I2C2_BASEADDR) I2C3_REG_RST();
+    else if (ptr_i2c_reg == (I2C_REG_T *) I2C3_BASEADDR) I2C3_REG_RST();
 }
 
-void I2C_peri_clk_ctrl(I2C_REG_t *ptr_i2c_reg, uint8_t enable)
+void I2C_peri_clk_ctrl(I2C_REG_T *ptr_i2c_reg, uint8_t enable)
 {
     if (enable) {
-        if (ptr_i2c_reg == (I2C_REG_t *) I2C1_BASEADDR) I2C1_PCLK_EN();
-        else if (ptr_i2c_reg == (I2C_REG_t *) I2C2_BASEADDR) I2C2_PCLK_EN();
-        else if (ptr_i2c_reg == (I2C_REG_t *) I2C3_BASEADDR) I2C3_PCLK_EN();
+        if (ptr_i2c_reg == (I2C_REG_T *) I2C1_BASEADDR) I2C1_PCLK_EN();
+        else if (ptr_i2c_reg == (I2C_REG_T *) I2C2_BASEADDR) I2C2_PCLK_EN();
+        else if (ptr_i2c_reg == (I2C_REG_T *) I2C3_BASEADDR) I2C3_PCLK_EN();
     } else {
-        if (ptr_i2c_reg == (I2C_REG_t *) SPI1_BASEADDR) I2C1_PCLK_DIS();
-        else if (ptr_i2c_reg == (I2C_REG_t *) SPI2_I2S2_BASEADDR) I2C1_PCLK_DIS();
-        else if (ptr_i2c_reg == (I2C_REG_t *) SPI3_I2S3_BASEADDR) I2C1_PCLK_DIS();
+        if (ptr_i2c_reg == (I2C_REG_T *) SPI1_BASEADDR) I2C1_PCLK_DIS();
+        else if (ptr_i2c_reg == (I2C_REG_T *) SPI2_I2S2_BASEADDR) I2C1_PCLK_DIS();
+        else if (ptr_i2c_reg == (I2C_REG_T *) SPI3_I2S3_BASEADDR) I2C1_PCLK_DIS();
 
     }
 }
 
-uint8_t I2C_GetStatusFlag(I2C_REG_t *ptr_i2c_reg, uint32_t flag)
+uint8_t I2C_GetStatusFlag(I2C_REG_T *ptr_i2c_reg, uint32_t flag)
 {
     if (ptr_i2c_reg->isr & flag) return 1;
     return 0;
@@ -69,7 +69,7 @@ void I2C_irq_priority_config(uint8_t irq_number, uint8_t irq_prior)
     *(NVIC_IPR_BASE_ADDR + iprx_index) |= (irq_prior << (shift_amount));
 }
 
-void I2C_peri_ctrl(I2C_REG_t *ptr_i2c_reg, uint8_t enable)
+void I2C_peri_ctrl(I2C_REG_T *ptr_i2c_reg, uint8_t enable)
 {
     if (enable) {
         ptr_i2c_reg->cr1 |= (1 << CR1_PE);

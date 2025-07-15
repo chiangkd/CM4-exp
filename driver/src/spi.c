@@ -71,7 +71,6 @@ void SPI_peri_clk_ctrl(SPI_I2S_REG_T *ptr_spi_reg, uint8_t enable)
         else if (ptr_spi_reg == (SPI_I2S_REG_T *) SPI2_I2S2_BASEADDR) SPI2_PCLK_DIS();
         else if (ptr_spi_reg == (SPI_I2S_REG_T *) SPI3_I2S3_BASEADDR) SPI3_PCLK_DIS();
         else if (ptr_spi_reg == (SPI_I2S_REG_T *) SPI4_BASEADDR) SPI4_PCLK_DIS();
-
     }
 }
 
