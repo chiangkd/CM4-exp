@@ -31,5 +31,5 @@ arm-none-eabi-gdb final.elf
 
 ## Measure HSI clock
 
-![image](https://github.com/chiangkd/CM4-exp/blob/main/img/hsi.png)
+![image](https://github.com/chiangkd/CM4-exp/blob/main/baremetel/img/hsi.png)
 - We can observe HSI clock's frequency is 8MHz (sample rate: 16MHz)
