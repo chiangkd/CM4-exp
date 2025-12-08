@@ -2,6 +2,11 @@
 
 CM4-exp is an experimental project to learn MCU control on Cortex M4 device ([STM32F303ZE](https://www.st.com/en/microcontrollers-microprocessors/stm32f303ze.html)). Debug with [OpenOCD](https://openocd.org/) and [Saleae Logic 16](https://www.saleae.com/?srsltid=AfmBOorA8-j5SQwJtDKi4IJjFSRWM6KEGix1lJ8B-GzaEoA3FFcqMixS) (Logic Analyzer, LA)
 
+## Folder
+
+- `/baremetal`: Hand-written device peripheral layer and driver
+- `/CMSIS`: Integrate CMSIS
+
 ## Reference
 - [OpenOCD General Command Line](https://openocd.org/doc/html/General-Commands.html)
 - [Cortex -M4 Devices Generic User Guide Generic User Guide](https://developer.arm.com/documentation/dui0553/latest/)
