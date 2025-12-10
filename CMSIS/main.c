@@ -1,5 +1,12 @@
 #include "stm32f303xe.h"
 
+// Platform driver
+#include "spi.h"
+
+// Modules driver
+#include "ssd1306.h"
+
+// Test code
 void turnOnLEDs()
 {
     // Enable GPIOB clock
@@ -24,9 +31,17 @@ void turnOnLEDs()
     return;
 }
 
-int main(void) {
 
-    turnOnLEDs();
+int main(void)
+{
+    SPI1_GPIO_Init();
+    SPI1_Init();
 
-    while(1);
+    OLED_Init();
+    OLED_Clear();
+    OLED_TestWhite();  // Set all white
+
+    while (1)
+    {
+    }
 }

@@ -12,3 +12,4 @@ CM4-exp is an experimental project to learn MCU control on Cortex M4 device ([ST
 - [Cortex -M4 Devices Generic User Guide Generic User Guide](https://developer.arm.com/documentation/dui0553/latest/)
 - [Udemy - Mastering Microcontroller and Embedded Driver Development](https://www.udemy.com/course/mastering-microcontroller-with-peripheral-driver-development/learn/lecture/22179246?start=0#overview)
 - [Udemy - Embedded Systems Programming on ARM Cortex-M3/M4 Processor](https://www.udemy.com/course/embedded-system-programming-on-arm-cortex-m3m4/learn/lecture/19391802?start=0#overview)
+- [NUCLEO-F303ZE](https://os.mbed.com/platforms/ST-Nucleo-F303ZE/)
