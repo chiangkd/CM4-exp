@@ -27,3 +27,5 @@ void OLED_WriteData(uint8_t data);
 void OLED_Init(void);
 void OLED_Clear(void);
 void OLED_TestWhite(void);
+
+void OLED_TestPic(void);

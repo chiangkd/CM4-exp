@@ -39,8 +39,8 @@ int main(void)
 
     OLED_Init();
     OLED_Clear();
-    OLED_TestWhite();  // Set all white
-
+    // OLED_TestWhite();  // Set all white
+    OLED_TestPic();
     while (1)
     {
     }
