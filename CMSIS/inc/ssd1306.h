@@ -1,3 +1,6 @@
+#ifndef __SSD1306_H_
+#define __SSD1306_H_
+
 #include "stm32f303xe.h"
 
 // ======== Pin Mapping ========
@@ -27,5 +30,6 @@ void OLED_WriteData(uint8_t data);
 void OLED_Init(void);
 void OLED_Clear(void);
 void OLED_TestWhite(void);
+void OLED_DrawBitmap(const unsigned char *bitmap);
 
-void OLED_TestPic(void);
+#endif

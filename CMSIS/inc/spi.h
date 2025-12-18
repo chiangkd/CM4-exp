@@ -1,6 +1,10 @@
-#include "stm32f303xe.h"
+#ifndef __SPI_H_
+#define __SPI_H_
 
+#include "stm32f303xe.h"
 
 void SPI1_Init(void);
 void SPI1_SendByte(uint8_t data);
 void SPI1_GPIO_Init(void);
+
+#endif

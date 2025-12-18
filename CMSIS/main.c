@@ -1,10 +1,16 @@
 #include "stm32f303xe.h"
-
+#include "systick.h"
 // Platform driver
 #include "spi.h"
 
 // Modules driver
 #include "ssd1306.h"
+
+// Buzzer driver
+#include "buzzer.h"
+
+// Nyan Cat
+#include "nyan_cat.h"
 
 // Test code
 void turnOnLEDs()
@@ -36,12 +42,14 @@ int main(void)
 {
     SPI1_GPIO_Init();
     SPI1_Init();
+    systick_init();
+    buzzer_init();
 
     OLED_Init();
     OLED_Clear();
-    // OLED_TestWhite();  // Set all white
-    OLED_TestPic();
-    while (1)
-    {
+
+    while (1) {
+        NyanCat_sound_update();
+        NyanCat_anime_update();
     }
 }
