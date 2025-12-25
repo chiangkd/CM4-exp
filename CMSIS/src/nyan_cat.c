@@ -395,16 +395,17 @@ static const unsigned char *NyanCatFrams[FRAMES_NUM] = {
 };
 
 
+#define ANIME_INTERVAL 100
 
 void NyanCat_anime_update(void)
 {
     static uint32_t last_ms = 0;
     static uint8_t frame = 0;
 
-    if (sys_ms - last_ms < 100)
+    if (sys_ms - last_ms < ANIME_INTERVAL)
         return;
 
-    last_ms = sys_ms;
+    last_ms += ANIME_INTERVAL;
 
     OLED_DrawBitmap(NyanCatFrams[frame]);
     frame = (frame + 1) % FRAMES_NUM;
