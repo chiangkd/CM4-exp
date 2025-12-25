@@ -41,10 +41,12 @@ void NyanCat_sound_update(void)
 	static uint32_t last_ms = 0;
 	static uint8_t idx = 0;
 
-	if (sys_ms - last_ms < nyan_music[idx].dur)
+	uint32_t dur = nyan_music[idx].dur;
+
+	if (sys_ms - last_ms < dur)
 		return;
 
-	last_ms = sys_ms;
+	last_ms += dur;
 
 	buzzer_set_freq(nyan_music[idx].freq);
 
