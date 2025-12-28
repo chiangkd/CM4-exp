@@ -81,7 +81,7 @@ int main(void)
     status = xTaskCreate(NyanCatSoundTask, "NyanSound", 128, NULL, 2, NULL);
     configASSERT(status == pdPASS);
 
-    status = xTaskCreate(NyanCatAnimeTask, "NyanAnime", 1024, NULL, 1, NULL);
+    status = xTaskCreate(NyanCatAnimeTask, "NyanAnime", 512, NULL, 1, NULL);
     configASSERT(status == pdPASS);
 
     vTaskStartScheduler();
