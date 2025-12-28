@@ -28,6 +28,23 @@
 #define NOTE_B5   988
 
 #define NOTE_REST 0
+typedef struct {
+    uint16_t freq;   // Hz
+    uint16_t dur;    // duration (ms)
+} note_t;
+
+// sizeof function need to know the size of array,
+// so, give it as an constant with 'extern' array
+#define MUSIC_LEN   (39)
+extern const note_t nyan_music[39];
+
+extern const unsigned char NyanCat_Frame1[];
+extern const unsigned char NyanCat_Frame2[];
+extern const unsigned char NyanCat_Frame3[];
+extern const unsigned char NyanCat_Frame4[];
+extern const unsigned char NyanCat_Frame5[];
+
+
 
 void NyanCat_sound_update(void);
 void NyanCat_anime_update(void);

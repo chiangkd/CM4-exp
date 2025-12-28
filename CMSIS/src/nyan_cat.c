@@ -4,11 +4,6 @@
 #include "nyan_cat.h"
 #include "systick.h"
 
-typedef struct {
-    uint16_t freq;   // Hz
-    uint16_t dur;    // duration (ms)
-} note_t;
-
 // sound
 const note_t nyan_music[] = {
 
@@ -34,24 +29,6 @@ const note_t nyan_music[] = {
     {NOTE_G5, 150}, {NOTE_E5, 150}, {NOTE_C5, 300},
 };
 
-#define MUSIC_LEN (sizeof(nyan_music)/sizeof(note_t))
-
-void NyanCat_sound_update(void)
-{
-	static uint32_t last_ms = 0;
-	static uint8_t idx = 0;
-
-	uint32_t dur = nyan_music[idx].dur;
-
-	if (sys_ms - last_ms < dur)
-		return;
-
-	last_ms += dur;
-
-	buzzer_set_freq(nyan_music[idx].freq);
-
-	idx = (idx + 1) % MUSIC_LEN;
-}
 
 // anime
 const unsigned char NyanCat_Frame1[] = {
@@ -399,14 +376,7 @@ static const unsigned char *NyanCatFrams[FRAMES_NUM] = {
 
 void NyanCat_anime_update(void)
 {
-    static uint32_t last_ms = 0;
-    static uint8_t frame = 0;
-
-    if (sys_ms - last_ms < ANIME_INTERVAL)
-        return;
-
-    last_ms += ANIME_INTERVAL;
-
+	static uint8_t frame = 0;
     OLED_DrawBitmap(NyanCatFrams[frame]);
     frame = (frame + 1) % FRAMES_NUM;
 }

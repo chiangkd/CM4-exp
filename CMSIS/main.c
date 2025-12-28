@@ -1,18 +1,20 @@
+#include <stddef.h>
+
 #include "stm32f303xe.h"
 #include "systick.h"
-// Platform driver
+
 #include "spi.h"
-
-// Modules driver
 #include "ssd1306.h"
-
-// Buzzer driver
 #include "buzzer.h"
 
-// Nyan Cat
 #include "nyan_cat.h"
 
-// Test code
+// rtos
+#include "FreeRTOS.h"
+#include "task.h"
+
+#define NYAN_ANIME_TASK_PERIOD   (100)
+
 void turnOnLEDs()
 {
     // Enable GPIOB clock
@@ -37,19 +39,53 @@ void turnOnLEDs()
     return;
 }
 
+void NyanCatSoundTask(void *pvParameters)
+{
+    (void) pvParameters;
+    uint8_t idx = 0;
+
+    for (;;) {
+        uint32_t freq = nyan_music[idx].freq;
+        uint32_t dur  = nyan_music[idx].dur;
+
+        buzzer_set_freq(freq);
+
+        vTaskDelay(pdMS_TO_TICKS(dur));
+        
+        idx = (idx + 1) % MUSIC_LEN;
+    }
+}
+
+void NyanCatAnimeTask(void *pvParameters)
+{
+    (void) pvParameters;
+    for (;;) {
+        NyanCat_anime_update();
+        vTaskDelay(pdMS_TO_TICKS(NYAN_ANIME_TASK_PERIOD));
+    }
+}
+
 
 int main(void)
 {
+    BaseType_t status;
+
     SPI1_GPIO_Init();
     SPI1_Init();
-    systick_init();
     buzzer_init();
 
     OLED_Init();
     OLED_Clear();
 
-    while (1) {
-        NyanCat_sound_update();
-        NyanCat_anime_update();
-    }
+    // Sound has higher priority
+    status = xTaskCreate(NyanCatSoundTask, "NyanSound", 128, NULL, 2, NULL);
+    configASSERT(status == pdPASS);
+
+    status = xTaskCreate(NyanCatAnimeTask, "NyanAnime", 1024, NULL, 1, NULL);
+    configASSERT(status == pdPASS);
+
+    vTaskStartScheduler();
+
+    // Never runs here
+    for (;;);
 }
